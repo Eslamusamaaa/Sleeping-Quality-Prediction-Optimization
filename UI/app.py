@@ -90,12 +90,7 @@ class SleepConsultant:
         return self.model.predict(df_aligned)[0]
 
     def generate_report(self, user_profile):
-        """
-        Generates a full, detailed report as a formatted Markdown string.
-        """
         report_lines = []
-
-        # --- Phase 1: Heavily Expanded and Detailed Analysis of User's Current State ---
         report_lines.append("## Detailed Analysis of Your Current Profile")
         duration = user_profile.get('Sleep Duration', 0)
         stress = user_profile.get('Stress Level', 0)
@@ -104,41 +99,32 @@ class SleepConsultant:
         steps = user_profile.get('Daily Steps', 0)
         bmi_category = user_profile.get('BMI Category', 'Normal')
 
-        # In-depth analysis for Sleep Duration
         if duration < 6.0: report_lines.append(f"- **Sleep Duration:** At `{duration:.1f}` hours, your sleep is critically low. This is likely the primary factor affecting your energy, mood, and cognitive function.")
         elif duration < 7.0: report_lines.append(f"- **Sleep Duration:** Your `{duration:.1f}` hours is below the recommended 7-9 hours. Even a small increase could lead to noticeable improvements.")
         else: report_lines.append(f"- **Sleep Duration:** At `{duration:.1f}` hours, your sleep duration is within the optimal healthy range. This is a strong foundation.")
 
-        # In-depth analysis for Stress Level
         if stress >= 8: report_lines.append(f"- **Stress Level:** A score of `{stress}/10` is very high and is a major obstacle to restorative sleep. High cortisol levels from stress can prevent you from reaching deep sleep stages.")
         elif stress >= 6: report_lines.append(f"- **Stress Level:** A score of `{stress}/10` is high and is likely impacting your sleep quality, even if you are getting enough hours.")
         else: report_lines.append(f"- **Stress Level:** Your stress level of `{stress}/10` is in a manageable range. This is a positive factor for your sleep.")
         
-        # In-depth analysis for Physical Activity
         if activity < 30: report_lines.append(f"- **Physical Activity:** `{activity}` minutes of daily activity is low and represents a significant opportunity for improvement. Regular exercise is a powerful tool to increase sleep pressure.")
         elif activity < 60: report_lines.append(f"- **Physical Activity:** `{activity}` minutes is a good start. Increasing this towards 60 minutes of moderate activity daily could further enhance your sleep depth.")
         else: report_lines.append(f"- **Physical Activity:** `{activity}` minutes of daily activity is an excellent amount that strongly supports high-quality sleep.")
 
-        # In-depth analysis for Daily Steps
         if steps < 5000: report_lines.append(f"- **Daily Steps:** A count of `{steps}` indicates a largely sedentary lifestyle, which can negatively affect sleep patterns and overall health.")
         elif steps < 7500: report_lines.append(f"- **Daily Steps:** Your count of `{steps}` is a good baseline. Pushing this towards the 8,000-10,000 range can lead to better health and sleep outcomes.")
         else: report_lines.append(f"- **Daily Steps:** Your step count of `{steps}` is excellent and reflects an active lifestyle that promotes good sleep.")
 
-        # In-depth analysis for Heart Rate
         if hr > 85: report_lines.append(f"- **Heart Rate:** Your resting heart rate of `{hr}` bpm is significantly elevated. This is often a sign of high stress or poor cardiovascular fitness, both of which are detrimental to sleep.")
         elif hr > 75: report_lines.append(f"- **Heart Rate:** Your resting heart rate of `{hr}` bpm is on the higher side of normal. This could be an indicator of underlying stress or a need for more cardiovascular exercise.")
         else: report_lines.append(f"- **Heart Rate:** Your resting heart rate of `{hr}` bpm is in a healthy, optimal range.")
         
-        # In-depth analysis for BMI Category
         if bmi_category in ['Overweight', 'Obese']: report_lines.append(f"- **BMI Category:** Your category of '{bmi_category}' indicates excess body weight, which is a significant risk factor for poor sleep quality and sleep apnea.")
         else: report_lines.append(f"- **BMI Category:** Your category of '{bmi_category}' is healthy and supports good sleep quality.")
 
-        # --- Phase 2: The Prediction ---
         predicted_score = self._predict_quality(user_profile)
         report_lines.append("---")
         report_lines.append(f"### Based on this detailed analysis, your predicted sleep quality score is: **{predicted_score:.1f} / 10**")
-
-        # --- Phase 3: The Optimization Plan ---
         report_lines.append("## Your Personalized Optimization Plan")
         if predicted_score >= 8.5:
             report_lines.append("Your predicted score is in an excellent range. Your current habits are creating a strong foundation for quality sleep. Maintain this consistency.")
@@ -179,10 +165,8 @@ class SleepConsultant:
 # --- Streamlit Application UI ---
 # ==============================================================================
 
-# Use caching to load the model only once
 @st.cache_resource
 def load_consultant(pipeline_path):
-    # Check if the file exists before attempting to load
     if not os.path.exists(pipeline_path):
         st.error(f"FATAL ERROR: The model pipeline file was not found at the specified path: {pipeline_path}")
         st.error("Please ensure the file exists and the path is correct.")
@@ -194,14 +178,21 @@ def main():
     st.title("Personalized Sleep Quality Consultant 😴")
     st.write("Enter your daily metrics, and our AI will provide a detailed analysis and a personalized action plan to improve your sleep quality.")
 
-    # --- Load the model ---
-    PIPELINE_PATH = r"C:\Users\Laptop World\Desktop\SleepingQualityPredictionOptimization\Model\sleep_pipeline.pkl"
+    # --- THIS IS THE MODIFIED PART ---
+    # This code finds the path to the model relative to the app.py script
+    try:
+        APP_DIR = os.path.dirname(os.path.abspath(__file__))
+        PROJECT_DIR = os.path.join(APP_DIR, '..')
+        MODEL_DIR = os.path.join(PROJECT_DIR, 'Model')
+        PIPELINE_PATH = os.path.join(MODEL_DIR, 'sleep_pipeline.pkl')
+    except NameError:
+        # This is a fallback for environments where __file__ is not defined (like some notebooks)
+        PIPELINE_PATH = os.path.join('..', 'Model', 'sleep_pipeline.pkl')
+    
     consultant = load_consultant(PIPELINE_PATH)
 
-    # --- User Inputs in the Sidebar ---
     st.sidebar.header("Enter Your Details:")
     
-    # Define lists for select boxes
     occupation_list = sorted([key for key in ADVICE_DATABASE.keys() if key != 'default'])
     
     gender = st.sidebar.selectbox("Gender", ["Male", "Female"])
@@ -217,10 +208,8 @@ def main():
     daily_steps = st.sidebar.slider("Daily Steps", 1000, 15000, 6000)
     bp = st.sidebar.text_input("Blood Pressure (e.g., 120/80)", "120/80")
 
-    # --- Generate Report Button ---
     if st.sidebar.button("Generate My Sleep Report"):
         
-        # Basic validation for blood pressure format
         if '/' not in bp or len(bp.split('/')) != 2:
             st.error("Invalid Blood Pressure format. Please use the format 'Systolic/Diastolic' (e.g., '120/80').")
         else:
