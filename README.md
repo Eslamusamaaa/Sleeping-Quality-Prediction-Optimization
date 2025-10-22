@@ -72,6 +72,3 @@ Follow these steps to run the application on your local machine.
 The application should now be running and accessible in your web browser.
 
 ---
-
-## Project Structure# Sleeping-Quality-Prediction-Optimization
-An AI-powered app to analyze and improve sleep quality.
