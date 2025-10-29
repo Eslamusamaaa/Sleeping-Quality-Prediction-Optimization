@@ -1,4 +1,8 @@
 pandas
 scikit-learn
 joblib
-streamlit
+HTML
+CSS
+JavaScript
+numpy
+matplotlip

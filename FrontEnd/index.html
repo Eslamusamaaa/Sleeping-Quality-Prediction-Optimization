@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sleep Quality Optimizer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+    :root{
+        /* New Modern Theme - Emerald Ocean to Midnight Blue */
+        --bg-start: #0c1428;
+        --bg-end: #1a2332;
+        --card-bg: rgba(20, 35, 55, 0.45);
+        --card-border: rgba(0, 206, 209, 0.2);
+        --accent-primary: #00d4ff;      /* Vibrant Cyan */
+        --accent-secondary: #7c3aed;    /* Royal Purple */
+        --accent-glow: #a78bfa;
+        --text-primary: #e2e8f0;
+        --text-secondary: #94a3b8;
+        --input-bg: rgba(45, 55, 80, 0.4);
+        --input-border: rgba(0, 212, 255, 0.3);
+        --select-arrow: #94a3b8;
+        --success: #10b981;
+        --warning: #f59e0b;
+        --danger: #ef4444;
+        --shadow-sm: 0 4px 15px rgba(0, 212, 255, 0.15);
+        --shadow-md: 0 8px 30px rgba(0, 212, 255, 0.25);
+        --radius-sm: 12px;
+        --radius-md: 16px;
+        --radius-lg: 20px;
+    }
+
+    *{box-sizing:border-box;margin:0;padding:0;}
+    
+    body{
+        font-family:'Inter',sans-serif;
+        background:linear-gradient(135deg, var(--bg-start), var(--bg-end));
+        background-attachment:fixed;
+        color:var(--text-primary);
+        min-height:100vh;
+        display:flex;
+        justify-content:center;
+        align-items:flex-start;
+        padding:20px;
+        overflow-y:auto;
+    }
+
+    .container{
+        width:100%;max-width:1100px;
+        background:var(--card-bg);
+        border:1px solid var(--card-border);
+        border-radius:var(--radius-lg);
+        box-shadow:var(--shadow-md);
+        padding:32px;
+        backdrop-filter:blur(16px);
+        -webkit-backdrop-filter:blur(16px);
+        margin-top:20px;
+        position:relative;
+        overflow:hidden;
+    }
+
+    .container::before{
+        content:'';
+        position:absolute;
+        top:0;left:0;right:0;height:4px;
+        background:linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), var(--accent-primary));
+        border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+    }
+
+    .header{
+        text-align:center;
+        margin-bottom:32px;
+        position:relative;
+    }
+
+    .header h1{
+        font-size:2.4rem;
+        font-weight:700;
+        background:linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+        margin-bottom:8px;
+        display:inline-block;
+    }
+
+    .header .subtitle{
+        color:var(--text-secondary);
+        font-size:0.95rem;
+        font-weight:500;
+    }
+
+    .section{
+        margin-top:28px;
+        background:var(--card-bg);
+        border-radius:var(--radius-md);
+        padding:20px;
+        border:1px solid var(--card-border);
+        transition:all 0.3s ease;
+    }
+
+    .section:hover{
+        box-shadow:var(--shadow-sm);
+        transform:translateY(-2px);
+    }
+
+    .section-title{
+        color:var(--accent-primary);
+        font-size:1.25rem;
+        font-weight:600;
+        margin-bottom:16px;
+        cursor:pointer;
+        display:flex;
+        align-items:center;
+        gap:10px;
+        position:relative;
+        padding-bottom:8px;
+    }
+
+    .section-title::after{
+        content:'';
+        position:absolute;
+        bottom:0;left:0;width:40px;height:3px;
+        background:var(--accent-primary);
+        border-radius:2px;
+        transition:all 0.3s ease;
+    }
+
+    .section-title:hover::after{
+        width:60px;
+    }
+
+    .section-title i{
+        font-size:1.1rem;
+        transition:transform 0.3s ease;
+    }
+
+    .section-title.collapsed i{
+        transform:rotate(-90deg);
+    }
+
+    .grid{
+        display:grid;
+        grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+        gap:20px;
+    }
+
+    .input-group{
+        position:relative;
+    }
+
+    label{
+        display:flex;
+        align-items:center;
+        gap:6px;
+        font-weight:600;
+        font-size:0.9rem;
+        margin-bottom:6px;
+        color:var(--text-secondary);
+    }
+
+    label i{
+        color:var(--accent-secondary);
+        font-size:0.9rem;
+    }
+
+    .req{
+        color:var(--danger);
+        font-weight:700;
+    }
+
+    input, select{
+        width:100%;
+        padding:12px 16px;
+        border-radius:var(--radius-sm);
+        border:1px solid var(--input-border);
+        background:var(--input-bg);
+        color:var(--text-primary);
+        font-size:0.95rem;
+        transition:all 0.3s ease;
+        backdrop-filter:blur(4px);
+    }
+
+    input::placeholder{
+        color:var(--text-secondary);
+        opacity:0.7;
+    }
+
+    input:focus, select:focus{
+        outline:none;
+        border-color:var(--accent-primary);
+        background:rgba(0,212,255,0.15);
+        box-shadow:0 0 0 3px rgba(0,212,255,0.25), var(--shadow-sm);
+        transform:scale(1.02);
+    }
+
+    select{
+        appearance:none;
+        background-image:url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2300d4ff'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+        background-repeat:no-repeat;
+        background-position:right 12px center;
+        background-size:16px;
+        padding-right:40px;
+    }
+
+    .hint{
+        font-size:0.78rem;
+        color:var(--text-secondary);
+        margin-top:6px;
+        font-family:'JetBrains Mono',monospace;
+        display:flex;
+        align-items:center;
+        gap:4px;
+    }
+
+    .hint i{
+        font-size:0.7rem;
+        opacity:0.7;
+    }
+
+    .btn-primary{
+        margin-top:32px;
+        background:linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        color:white;
+        border:none;
+        padding:16px 24px;
+        font-size:1.1rem;
+        font-weight:600;
+        border-radius:var(--radius-md);
+        cursor:pointer;
+        transition:all 0.4s ease;
+        width:100%;
+        position:relative;
+        overflow:hidden;
+        text-transform:uppercase;
+        letter-spacing:0.5px;
+        box-shadow:var(--shadow-sm);
+    }
+
+    .btn-primary::before{
+        content:'';
+        position:absolute;
+        top:0;left:-100%;
+        width:100%;
+        height:100%;
+        background:linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        transition:all 0.6s;
+    }
+
+    .btn-primary:hover{
+        transform:translateY(-4px);
+        box-shadow:var(--shadow-md), 0 0 20px rgba(0,212,255,0.4);
+    }
+
+    .btn-primary:hover::before{
+        left:100%;
+    }
+
+    .btn-primary:active{
+        transform:translateY(-2px);
+    }
+
+    #loading{
+        text-align:center;
+        margin-top:20px;
+        color:var(--accent-secondary);
+        display:none;
+    }
+
+    .progress-container{
+        height:6px;
+        background:rgba(0,212,255,0.2);
+        border-radius:3px;
+        overflow:hidden;
+        margin-top:10px;
+        box-shadow:inset 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    .progress-bar{
+        width:0;
+        height:100%;
+        background:linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+        transition:width 0.4s ease;
+        position:relative;
+        overflow:hidden;
+    }
+
+    .progress-bar::after{
+        content:'';
+        position:absolute;
+        top:0;left:-100%;
+        width:50%;
+        height:100%;
+        background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+        animation:shimmer 1.5s infinite;
+    }
+
+    @keyframes shimmer{
+        0%{left:-100%;}
+        100%{left:100%;}
+    }
+
+    .result-container{
+        margin-top:36px;
+        display:grid;
+        gap:20px;
+    }
+
+    .score-display{
+        text-align:center;
+        padding:24px;
+        background:linear-gradient(135deg, rgba(0,212,255,0.15), rgba(124,58,237,0.15));
+        border-radius:var(--radius-md);
+        border:1px solid var(--card-border);
+        position:relative;
+        overflow:hidden;
+    }
+
+    .score-display::before{
+        content:'';
+        position:absolute;
+        top:0;left:0;right:0;bottom:0;
+        background:radial-gradient(circle at center, rgba(0,212,255,0.1), transparent 70%);
+        pointer-events:none;
+    }
+
+    .score-circle{
+        width:120px;height:120px;
+        border-radius:50%;
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        margin:0 auto 16px;
+        position:relative;
+        background:conic-gradient(var(--accent-primary) 0% var(--score-percent), rgba(0,212,255,0.2) var(--score-percent) 100%);
+        padding:8px;
+    }
+
+    .score-inner{
+        width:100%;height:100%;
+        border-radius:50%;
+        background:var(--bg-end);
+        display:flex;
+        flex-direction:column;
+        justify-content:center;
+        align-items:center;
+        font-weight:700;
+    }
+
+    .score-value{
+        font-size:1.8rem;
+        background:linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    .score-label{
+        font-size:0.8rem;
+        color:var(--text-secondary);
+        text-transform:uppercase;
+        letter-spacing:1px;
+    }
+
+    .result-card{
+        padding:24px;
+        border-radius:var(--radius-md);
+        background:var(--card-bg);
+        border-left:5px solid var(--accent-primary);
+        line-height:1.7;
+        font-size:0.95rem;
+        animation:fadeInUp 0.6s ease;
+        border:1px solid var(--card-border);
+        position:relative;
+    }
+
+    .result-card::before{
+        content:'';
+        position:absolute;
+        top:0;left:0;
+        width:100%;height:100%;
+        background:linear-gradient(135deg, rgba(0,212,255,0.05), transparent);
+        border-radius:var(--radius-md);
+        pointer-events:none;
+    }
+
+    .result-card h3{
+        margin-bottom:16px;
+        color:var(--accent-primary);
+        font-weight:600;
+        display:flex;
+        align-items:center;
+        gap:10px;
+    }
+
+    .result-card h3 i{
+        background:linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        -webkit-background-clip:text;
+        -webkit-text-fill-color:transparent;
+        background-clip:text;
+    }
+
+    .tip{
+        background:rgba(124,58,237,0.15);
+        border-left:4px solid var(--accent-secondary);
+        padding:12px 16px;
+        border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+        margin:12px 0;
+        font-size:0.9rem;
+        color:var(--text-primary);
+        border:1px solid rgba(124,58,237,0.3);
+    }
+
+    @keyframes fadeInUp{
+        from{opacity:0;transform:translateY(20px);}
+        to{opacity:1;transform:translateY(0);}
+    }
+
+    @media(max-width:768px){
+        .grid{grid-template-columns:1fr;}
+        .header h1{font-size:2rem;}
+        .score-circle{width:100px;height:100px;}
+        .score-value{font-size:1.5rem;}
+    }
+
+    @media(max-width:480px){
+        .container{padding:20px;}
+        .section{padding:16px;}
+    }
+
+    .floating-particles{
+        position:fixed;
+        top:0;left:0;
+        width:100%;height:100%;
+        pointer-events:none;
+        z-index:-1;
+    }
+
+    .particle{
+        position:absolute;
+        background:var(--accent-glow);
+        border-radius:50%;
+        opacity:0;
+        animation:float 15s infinite linear;
+    }
+
+    @keyframes float{
+        0%{transform:translateY(100vh) scale(0);opacity:0;}
+        10%{opacity:1;}
+        90%{opacity:1;}
+        100%{transform:translateY(-100px) scale(1);opacity:0;}
+    }
+</style>
+</head>
+<body>
+
+<div class="floating-particles" id="particles"></div>
+
+<div class="container">
+    <div class="header">
+        <h1>Sleep Quality Optimizer</h1>
+        <p class="subtitle">AI-Powered Sleep Analysis & Personalized Optimization</p>
+    </div>
+
+    <form id="predictForm">
+        <!-- Personal Information -->
+        <div class="section">
+            <div class="section-title" onclick="toggle(this)">
+                <i class="fas fa-user"></i> Personal Information
+            </div>
+            <div class="grid">
+                <div class="input-group">
+                    <label><i class="fas fa-birthday-cake"></i> Age <span class="req">*</span></label>
+                    <input type="number" name="Age" min="18" max="100" placeholder="e.g. 32" required>
+                    <div class="hint"><i class="fas fa-info-circle"></i> Your current age in years</div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-venus-mars"></i> Gender</label>
+                    <select name="Gender">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-weight"></i> Weight (kg) <span class="req">*</span></label>
+                    <input type="number" name="Weight" min="30" placeholder="e.g. 75" required>
+                    <div class="hint"><i class="fas fa-balance-scale"></i> Current body weight</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Work & Lifestyle -->
+        <div class="section">
+            <div class="section-title" onclick="toggle(this)">
+                <i class="fas fa-briefcase"></i> Work & Lifestyle
+            </div>
+            <div class="grid">
+                <div class="input-group">
+                    <label><i class="fas fa-building"></i> Occupation</label>
+                    <select name="Occupation">
+                        <option value="Student">Student</option>
+                        <option value="Engineer">Software Engineer</option>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Teacher">Teacher</option>
+                        <option value="Office Worker">Office Worker</option>
+                        <option value="Freelancer">Freelancer</option>
+                        <option value="Healthcare">Healthcare Professional</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-clock"></i> Daily Work Hours <span class="req">*</span></label>
+                    <input type="number" step="0.1" name="Daily Work Hours" min="0" max="24" placeholder="e.g. 8.5" required>
+                    <div class="hint"><i class="fas fa-hourglass-half"></i> Average hours per day</div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-mobile-alt"></i> Screen Time (h) <span class="req">*</span></label>
+                    <input type="number" step="0.1" name="Screen Time" min="0" placeholder="e.g. 6.0" required>
+                    <div class="hint"><i class="fas fa-eye"></i> Total hours on screens daily</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sleep & Activity -->
+        <div class="section">
+            <div class="section-title" onclick="toggle(this)">
+                <i class="fas fa-bed"></i> Sleep & Activity
+            </div>
+            <div class="grid">
+                <div class="input-group">
+                    <label><i class="fas fa-moon"></i> Sleep Duration (h) <span class="req">*</span></label>
+                    <input type="number" step="0.1" name="Sleep Duration" min="0" max="24" placeholder="e.g. 7.2" required>
+                    <div class="hint"><i class="fas fa-bed"></i> Average hours of sleep per night</div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-running"></i> Physical Activity (min) <span class="req">*</span></label>
+                    <input type="number" name="Physical Activity Level" min="0" placeholder="e.g. 45" required>
+                    <div class="hint"><i class="fas fa-dumbbell"></i> Daily exercise/walking minutes</div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-shoe-prints"></i> Daily Steps <span class="req">*</span></label>
+                    <input type="number" name="Daily Steps" min="0" placeholder="e.g. 8500" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Health Metrics -->
+        <div class="section">
+            <div class="section-title" onclick="toggle(this)">
+                <i class="fas fa-heartbeat"></i> Health Metrics
+            </div>
+            <div class="grid">
+                <div class="input-group">
+                    <label><i class="fas fa-heart"></i> Heart Rate (bpm) <span class="req">*</span></label>
+                    <input type="number" name="Heart Rate" min="30" max="200" placeholder="e.g. 72" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-brain"></i> Stress Level (1-10) <span class="req">*</span></label>
+                    <input type="number" step="0.1" name="Stress Level" min="1" max="10" placeholder="e.g. 6.5" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-coffee"></i> Caffeine Intake (mg) <span class="req">*</span></label>
+                    <input type="number" name="Caffeine Intake" min="0" placeholder="e.g. 150" required>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-stethoscope"></i> Sleep Disorder</label>
+                    <select name="Sleep Disorder">
+                        <option value="None">None</option>
+                        <option value="Insomnia">Insomnia</option>
+                        <option value="Sleep Apnea">Sleep Apnea</option>
+                        <option value="Restless Legs">Restless Legs Syndrome</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-tint"></i> Blood Pressure</label>
+                    <input type="text" name="Blood Pressure" placeholder="e.g. 120/80">
+                    <div class="hint"><i class="fas fa-info-circle"></i> Systolic/Diastolic (optional)</div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-primary">
+            <i class="fas fa-magic"></i> Analyze & Optimize My Sleep
+        </button>
+    </form>
+
+    <div id="loading">
+        <div>Neural networks analyzing your sleep patterns...</div>
+        <div class="progress-container"><div class="progress-bar"></div></div>
+    </div>
+
+    <div id="result" class="result-container"></div>
+</div>
+
+<script>
+/* Collapsible sections */
+function toggle(el){
+    el.classList.toggle('collapsed');
+    const content = el.nextElementSibling;
+    content.style.display = el.classList.contains('collapsed') ? 'none' : 'grid';
+}
+document.querySelectorAll('.section-title').forEach(t=>t.click());
+
+/* Floating particles background */
+function createParticles(){
+    const container = document.getElementById('particles');
+    const count = 30;
+    
+    for(let i = 0; i < count; i++){
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        
+        const size = Math.random() * 4 + 2;
+        const duration = Math.random() * 20 + 10;
+        const delay = Math.random() * 15;
+        const left = Math.random() * 100;
+        
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        particle.style.left = left + '%';
+        particle.style.animationDuration = duration + 's';
+        particle.style.animationDelay = delay + 's';
+        
+        container.appendChild(particle);
+    }
+}
+createParticles();
+
+/* Form submission */
+const form = document.getElementById('predictForm');
+const resultDiv = document.getElementById('result');
+const loading = document.getElementById('loading');
+const bar = loading.querySelector('.progress-bar');
+
+form.addEventListener('submit', async e=>{
+    e.preventDefault();
+    resultDiv.innerHTML = '';
+    loading.style.display = 'block';
+    bar.style.width = '0%';
+
+    let w = 0;
+    const interval = setInterval(()=> {
+        w = Math.min(w + 3 + Math.random() * 4, 92);
+        bar.style.width = w + '%';
+    }, 100);
+
+    const payload = Object.fromEntries(new FormData(form));
+
+    try{
+        const res = await fetch('http://127.0.0.1:5000/predict',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify(payload)
+        });
+        
+        clearInterval(interval);
+        bar.style.width = '100%';
+        await new Promise(r => setTimeout(r, 400));
+        
+        const data = await res.json();
+
+        if(!res.ok) throw new Error(data.error || 'Server error');
+
+        // Calculate score percentage for circle
+        const scorePercent = (data.score / 10) * 100;
+        document.documentElement.style.setProperty('--score-percent', scorePercent + '%');
+
+        const scoreHtml = `
+            <div class="score-display">
+                <div class="score-circle">
+                    <div class="score-inner">
+                        <div class="score-value">${data.score}</div>
+                        <div class="score-label">Sleep Score</div>
+                    </div>
+                </div>
+                <p>Your overall sleep quality rating</p>
+            </div>`;
+
+        const currentHtml = `
+            <div class="result-card">
+                <h3><i class="fas fa-chart-line"></i> Current Sleep Analysis</h3>
+                <div>${data.current}</div>
+            </div>`;
+
+        const planHtml = `
+            <div class="result-card">
+                <h3><i class="fas fa-lightbulb"></i> Personalized Optimization Plan</h3>
+                <div>${data.plan}</div>
+                <div class="tip">
+                    <i class="fas fa-star"></i> <strong>Pro Tip:</strong> Consistency is key. Track your progress over 2 weeks for best results.
+                </div>
+            </div>`;
+
+        resultDiv.innerHTML = scoreHtml + currentHtml + planHtml;
+        
+    }catch(err){
+        resultDiv.innerHTML = `
+            <div class="result-card" style="border-left-color:var(--danger);">
+                <h3><i class="fas fa-exclamation-triangle"></i> Analysis Error</h3>
+                <p><strong>${err.message}</strong></p>
+                <div class="tip">
+                    <i class="fas fa-plug"></i> Please ensure your local server is running on port 5000.
+                </div>
+            </div>`;
+    }finally{
+        setTimeout(()=>{ loading.style.display='none'; }, 500);
+    }
+});
+</script>
+</body>
+</html>
