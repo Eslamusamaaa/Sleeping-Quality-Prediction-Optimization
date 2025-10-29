@@ -12,6 +12,13 @@ It uses a **machine learning model (RandomForest Classifier)** trained on an enr
 
 More importantly, it acts as a **virtual sleep consultant**, providing a detailed analysis of the user's current habits and a **multi-point, customized action plan** with occupation-specific advice.
 
+During the data preparation phase, additional records were logically generated to improve the model’s ability to generalize better to unseen data.  
+The original dataset lacked samples for low sleep quality scores (1–3), so those labels were manually added to achieve a balanced label distribution.  
+Three new feature columns were also introduced to enhance behavioral context:
+- **Caffeine Intake**
+- **Daily Work Hours**
+- **Screen Time**
+
 ---
 
 ## Key Features
@@ -79,9 +86,11 @@ Follow these steps to run the application on your local machine:
    pip install -r requirements.txt
    ```
 
-4. **Place the Model File:**
+4. **Place the Model Files:**
 
-   Ensure your trained model file `sleep_pipeline.pkl` is located in the `Model` directory as specified in the code.
+   Ensure the following trained model files are located in the `Model` directory:
+   - `random forest.pkl`
+   - `label encoder.pkl`
 
 5. **Run the Application:**
 
