@@ -13,3 +13,6 @@ venv/
 
 # Temp files
 *.tmp
+# Local
+.DS_Store
+Thumbs.db

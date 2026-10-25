@@ -1,8 +1,7 @@
-pandas
-scikit-learn
-joblib
-HTML
-CSS
-JavaScript
-numpy
-matplotlip
+pandas>=2.0
+numpy>=1.26
+scikit-learn>=1.5
+joblib>=1.3
+flask>=3.0
+matplotlib>=3.8
+seaborn>=0.13
