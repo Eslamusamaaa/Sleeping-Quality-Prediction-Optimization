@@ -17,6 +17,19 @@ Built with **Python**, **scikit-learn**, **Flask** and a custom HTML/CSS/JavaScr
   screen time -2 h, ...) and the most effective ones are shown.
 - **Customized action plan** based on your numbers and your occupation.
 
+### How the score is computed
+
+The model is a **classifier**: it outputs a probability for each quality class from 1 to 9. The number shown in the
+app is **not** the single predicted class. It is the probability-weighted average of all classes:
+
+`score = sum(class x probability of that class)`
+
+Example: probabilities of 0.15 for class 2, 0.55 for class 3 and 0.30 for class 4 give `2x0.15 + 3x0.55 + 4x0.30 = 3.15`.
+
+Why: the classes are ordered (3 is closer to 4 than to 9), and a smooth score lets the what-if simulation show the
+effect of small changes (for example +0.9 for one more hour of sleep) even when the most likely class does not change.
+Note that the accuracy figures below are for the predicted **class**, not for this averaged score.
+
 ## Project structure
 
 ```
