@@ -1,0 +1,47 @@
+{
+  "Screen Time": {
+    "min": 0.97,
+    "max": 10.26,
+    "mean": 5.81
+  },
+  "Daily Work Hours": {
+    "min": 3.64,
+    "max": 12.78,
+    "mean": 8.12
+  },
+  "Caffeine Intake": {
+    "min": 1.0,
+    "max": 529.54,
+    "mean": 297.92
+  },
+  "Daily Steps": {
+    "min": 927.0,
+    "max": 12184.0,
+    "mean": 5872.96
+  },
+  "Heart Rate": {
+    "min": 49.0,
+    "max": 119.0,
+    "mean": 84.26
+  },
+  "Stress Level": {
+    "min": 1.42,
+    "max": 10.0,
+    "mean": 5.05
+  },
+  "Physical Activity Level": {
+    "min": 0.0,
+    "max": 176.0,
+    "mean": 85.19
+  },
+  "Sleep Duration": {
+    "min": 2.72,
+    "max": 8.85,
+    "mean": 5.55
+  },
+  "Age": {
+    "min": 27.0,
+    "max": 59.0,
+    "mean": 42.25
+  }
+}

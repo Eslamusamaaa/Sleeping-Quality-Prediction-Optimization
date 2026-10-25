@@ -1,0 +1,15 @@
+{
+  "mixed": {
+    "accuracy": 0.88,
+    "within_1": 0.965,
+    "mae": 0.155
+  },
+  "synthetic_only": {
+    "accuracy": 0.265,
+    "within_1": 0.645,
+    "mae": 1.33
+  },
+  "random_split_all_data": {
+    "accuracy": 0.9382
+  }
+}
