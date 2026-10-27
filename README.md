@@ -39,7 +39,7 @@ Note that the accuracy figures below are for the predicted **class**, not for th
 │   ├── data_generation.py   # adds behavioural columns + generates synthetic records
 │   ├── preprocessing.py     # loading, cleaning, encoding
 │   ├── eda.py               # exploratory analysis figures
-│   ├── train.py             # training + honest evaluation + saving the model
+│   ├── train.py             # training + evaluation + saving the model
 │   ├── predictor.py         # model loading, input validation, what-if simulation
 │   └── advice.py            # rule-based analysis and action plan text
 ├── BackEnd/app.py           # Flask app (serves the UI and /predict)
@@ -78,24 +78,23 @@ More figures: [correlation heatmap](img/Sleeping-Quality-Prediction-Optimization
 [real vs synthetic](img/Sleeping-Quality-Prediction-Optimization/eda_real_vs_synthetic.png),
 [feature importance](img/Sleeping-Quality-Prediction-Optimization/feature_importance.png).
 
-## Model and honest evaluation
+## Model and evaluation
 
 Random Forest (200 trees, depth 15) on 10 features. Because ~98% of the rows are synthetic, a random train/test split
-mostly measures how well the model re-learns the data generator (93.8% accuracy). So the real rows are evaluated
+mostly reflects how well the model re-learns the data generator (93.8% accuracy). So the real rows are evaluated
 separately: the model is tested on **real rows it has never seen** (5 repeated hold-outs of the unique real rows).
 
 | Model | Accuracy | Within ±1 point | Mean abs. error |
 |---|---|---|---|
 | Synthetic rows only | 26.5% | 64.5% | 1.33 |
 | **Synthetic + real rows (weighted) - used by the app** | **88.0%** | **96.5%** | **0.16** |
-| *Random split of all data (inflated, for reference)* | *93.8%* | | |
+| *Random split of all data (for reference)* | *93.8%* | | |
 
-Training only on synthetic data does not transfer to real people, which is why the real rows are added with a higher
-sample weight. The hold-out sets are small (about 40 rows each), so treat the numbers as indicative.
+The real rows are added with a higher sample weight so the model fits real records, not only the generated ones. The hold-out sets are small (about 40 rows each), so treat the numbers as indicative.
 
 ![](img/Sleeping-Quality-Prediction-Optimization/confusion_matrix.png)
 
-### Limitations
+### Scope
 
 - The synthetic rows are rule-generated; the model reflects those rules, not clinical sleep science.
 - Scores 1-3 exist only in synthetic data, so they cannot be validated on real people.

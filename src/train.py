@@ -1,7 +1,7 @@
 """Train and evaluate the Random Forest sleep-quality model.
 
 About 98% of Final_DataSet.csv is synthetic, so a random train/test split mostly measures how well the model
-re-learns the data generator. To get an honest number the real rows are split off first: the model is trained
+re-learns the data generator. To measure real-world fit the real rows are split off first: the model is trained
 on all synthetic rows plus part of the real rows and tested on the unseen real rows (repeated with several
 seeds). A model trained on synthetic rows only is evaluated the same way for comparison.
 """
